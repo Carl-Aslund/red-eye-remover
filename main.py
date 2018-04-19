@@ -48,7 +48,7 @@ for (x,y,w,h) in faces:
         bg = cv2.add(b, g)
 
         # Red eye mask
-        mask = (r > 150) & (r > (bg)*1.5)
+        mask = (r > 150) & (r > (bg)*1.6)
 
         # Convert the mask format
         mask = mask.astype(np.uint8)*255
@@ -69,13 +69,14 @@ for (x,y,w,h) in faces:
         np.copyto(eyeOut, mean, where=mask)
 
         # Merge the new eye into the output image
-        img[y:y+h, x:x+w, :] = eyeOut
+        imgOut[y:y+h, x:x+w, :] = eyeOut
 
 while True:
-    cv2.imshow("img",img)
+    cv2.imshow("img",imgOut)
     k = cv2.waitKey(30) & 0xFF
     if k == 27:
         break
+
 cv2.destroyAllWindows()
 
 """
