@@ -18,16 +18,21 @@ def remove_redeye(img, draw_boxes = False):
     faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
     eyesCascade = cv2.CascadeClassifier("haarcascade_eye.xml")
 
+    # Detect faces in the image
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = faceCascade.detectMultiScale(gray, 1.3, 5)
+    
     for (x,y,w,h) in faces:
         if draw_boxes:
             cv2.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)
 
+        # Make both gray and color copies of the face region
         roiGray = gray[y:y+h, x:x+w]
         roiColor = img[y:y+h, x:x+w]
 
+        # Detect eyes on the face
         eyes = eyesCascade.detectMultiScale(roiGray)
+        
         for (ex, ey, ew, eh) in eyes:
             if draw_boxes:
                 cv2.rectangle(roiColor, (ex,ey), (ex+ew,ey+eh), (0,255,0), 2)
