@@ -1,7 +1,8 @@
 import numpy as np
 import cv2
+import code
 
-IMG_SRC = "red_eye_couple.jpg"
+IMG_SRC = "red_eye_photomag.jpg"
 
 def fillHoles(mask):
     """Fill potential holes in a generated mask."""
@@ -37,7 +38,7 @@ for (x,y,w,h) in faces:
     for (ex, ey, ew, eh) in eyes:
         cv2.rectangle(roiColor, (ex,ey), (ex+ew,ey+eh), (0,255,0), 2)
         # Extract the individual eye from the larger image
-        eye = img[y:y+h, x:x+w]
+        eye = img[(y + ey):(y + ey+eh), (x + ex) :(x + ex+ew) ]
 
         # Split colors into RGB
         b = eye[:, :, 0]
@@ -48,7 +49,7 @@ for (x,y,w,h) in faces:
         bg = cv2.add(b, g)
 
         # Red eye mask
-        mask = (r > 150) & (r > (bg)*1.6)
+        mask = (r > 120) & (r > (bg)*2.6)
 
         # Convert the mask format
         mask = mask.astype(np.uint8)*255
@@ -62,6 +63,7 @@ for (x,y,w,h) in faces:
         mask = mask.astype(np.bool)[:, :, np.newaxis]
         mean = mean[:, :, np.newaxis]
 
+        #code.interact(local=locals())
         # Copy the eye from the original image
         eyeOut = eye.copy()
 
@@ -69,10 +71,10 @@ for (x,y,w,h) in faces:
         np.copyto(eyeOut, mean, where=mask)
 
         # Merge the new eye into the output image
-        imgOut[y:y+h, x:x+w, :] = eyeOut
+        img[(y + ey):(y + ey+eh), (x + ex) :(x + ex+ew) ] = eyeOut
 
 while True:
-    cv2.imshow("img",imgOut)
+    cv2.imshow("img",img)
     k = cv2.waitKey(30) & 0xFF
     if k == 27:
         break
