@@ -1,8 +1,5 @@
 import numpy as np
 import cv2
-import code
-
-IMG_SRC = "red_eye_photomag.jpg"
 
 def fillHoles(mask):
     """Fill potential holes in a generated mask."""
@@ -63,7 +60,6 @@ def remove_redeye(img, draw_boxes = False):
             mask = mask.astype(np.bool)[:, :, np.newaxis]
             mean = mean[:, :, np.newaxis]
 
-            #code.interact(local=locals())
             # Copy the eye from the original image
             eyeOut = eye.copy()
 
@@ -73,16 +69,6 @@ def remove_redeye(img, draw_boxes = False):
             # Merge the new eye into the output image
             img[(y + ey):(y + ey+eh), (x + ex) :(x + ex+ew) ] = eyeOut
     return img
-
-while True:
-    # Read the image
-    img = cv2.imread("test_img/"+IMG_SRC, cv2.IMREAD_COLOR)
-    cv2.imshow("img",remove_redeye(img))
-    k = cv2.waitKey(30) & 0xFF
-    if k == 27:
-        break
-
-cv2.destroyAllWindows()
 
 """
 while True:
